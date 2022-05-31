@@ -85,7 +85,7 @@ def off():
 
 def valve_button():
     global valve_value
-    ser4 = serial.Serial('COM11', 9600)
+    ser4 = serial.Serial('COM11', 9600) # 아두이노 포트 수정 > 아직 hid relay 적용 x
     if valve_value == True:
         if temp2 > float(set_t): #t1 상관없이
             valve_sig = '0'
