@@ -36,7 +36,7 @@ label7.place(x=400, y=0)
 label8.place(x=400, y=100)
 
 def temp1_set():
-    ser1 = serial.Serial("COM12", 19200, timeout=1)
+    ser1 = serial.Serial("COM12", 19200, timeout=1) # 1번센서 포트번호 수정
     ser1.write(b'ATCD\r\n')
     global temp1
     temp1 = float((ser1.readline()[4:9]).split()[0])
@@ -44,7 +44,7 @@ def temp1_set():
     label1.config(text=str(temp1) + '℃')
 
 def temp2_set():
-    ser2 = serial.Serial("COM13", 19200, timeout=1)
+    ser2 = serial.Serial("COM13", 19200, timeout=1) # 2번센서 포트번호 수정
     ser2.write(b'ATCD\r\n')
     global temp2
     temp2 = float((ser2.readline()[4:9]).split()[0])
@@ -52,7 +52,7 @@ def temp2_set():
     label2.config(text=str(temp2) + '℃')
 
 def temp3_set():
-    ser3 = serial.Serial("COM14", 19200, timeout=1)
+    ser3 = serial.Serial("COM14", 19200, timeout=1) # 3번센서 포트번호 수정
     ser3.write(b'ATCD\r\n')
     global temp3
     temp3 = float((ser3.readline()[4:9]).split()[0])
@@ -155,7 +155,7 @@ def record_button():
         wb.save(txt.get() + '/Record_Temp.xlsx')
     else:
         pass
-    monitor.after(10000, record_button)
+    monitor.after(10000, record_button) # 기록주기 10000ms > 10
 
 temp_monitor()
 valve_button()
