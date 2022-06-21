@@ -65,7 +65,7 @@ def temp1_set():
             global temp1
             temp1 = (((ser1.readline()[4:12]).split()[0]).decode('utf-8')).split(',')[0]
             ser1.close()
-            label1.config(text='-178.55℃')
+            label1.config(text=temp1 + '℃')
         else:
             temp1 = 0.0
             label1.config(text='--.-℃')
