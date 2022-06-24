@@ -1,7 +1,7 @@
 import re
 from tkinter import *
 from tkinter import filedialog
-from numpy import append, array
+import numpy
 import serial
 import time
 import openpyxl
@@ -9,7 +9,9 @@ from datetime import datetime
 from HIDRelay import hid_relay
 
 temp_group1 = list(range(0,5))
+float_temp_group1 = list(np.float_(temp_group1))
 temp_group2 = list(range(0,5))
+float_temp_group2 = list(np.float_(temp_group2))
 
 monitor = Tk()
 monitor.title('Temp_monitor')
@@ -144,30 +146,21 @@ def valve_button():
         temp_group2.append(temp2)
         temp_group2.pop(0)
         if valve_value == True:
-            if all(float(set_t) < i for i in temp_group2):
+            if all((set_t) < i for i in float_temp_group2):
                 valve_sig = '0'
                 valve_signal = valve_sig.encode('utf-8')
                 rc.on_relay(1)
                 label8.config(text='Open')
-                print("O1")
-            elif all(float(set_t) < i for i in temp_group1) and all(float(set_t) > i for i in temp_group2):
+            elif all((set_t) < i for i in float_temp_group1) and all((set_t) > i for i in float_temp_group2):
                 valve_sig = '1'
                 valve_signal = valve_sig.encode('utf-8')
                 rc.on_relay(1)
                 label8.config(text='Open')
-                print("O2")
-            elif all(float(set_t) > i for i in temp_group1) and all(float(set_t) > i for i in temp_group2):
+            elif all((set_t) > i for i in float_temp_group1) and all((set_t) > i for i in float_temp_group2):
                 valve_sig = '1'
                 valve_signal = valve_sig.encode('utf-8')
                 rc.off_relay(1)
                 label8.config(text='Close')
-                print("C1")
-            # else:
-            #     valve_sig = '1'
-            #     valve_signal = valve_sig.encode('utf-8')
-            #     rc.off_relay(1)
-            #     label8.config(text='Close')
-            #     print("C2")
         else:
             valve_sig = '1'
             valve_signal = valve_sig.encode('utf-8')
