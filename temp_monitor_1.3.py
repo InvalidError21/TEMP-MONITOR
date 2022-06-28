@@ -1,7 +1,7 @@
 import re
 from tkinter import *
 from tkinter import filedialog
-import numpy
+import numpy as np
 import serial
 import time
 import openpyxl
@@ -113,70 +113,70 @@ def temp_monitor():
     temp3_set()
     monitor.after(1000, temp_monitor)
 
-valve_value = False
+valve_value = 0
 record_value = False
 
 set_temp = Entry(monitor, width=10)
-set_temp.place(x=490, y=230)
+set_temp.place(x=550, y=209)
 
-def on():
+def sys_on():
     try:
         global valve_value
         global set_t
         set_t = float(set_temp.get())
-        valve_value = True
+        valve_value = 1
         return valve_value
     except:
         pass
 
+def on():
+    global valve_value
+    valve_value = 2
+    return valve_value
+
 def off():
     global valve_value
-    valve_value = False
+    valve_value = 0
     return valve_value
 
 def valve_button():
     try:
         rc = hid_relay.RelayController()
         rc.open_device()
-        rc.off_all()
-
         global valve_value
-        temp_group1.append(temp1)
-        temp_group1.pop(0)
-        temp_group2.append(temp2)
-        temp_group2.pop(0)
-        if valve_value == True:
-            if all((set_t) < i for i in float_temp_group2):
-                valve_sig = '0'
-                valve_signal = valve_sig.encode('utf-8')
+        float_temp_group1.append(temp1)
+        float_temp_group1.pop(0)
+        float_temp_group2.append(temp2)
+        float_temp_group2.pop(0)
+        if valve_value == 1:
+            if all((set_t) < float(i) for i in float_temp_group2):
                 rc.on_relay(1)
                 label8.config(text='Open')
-            elif all((set_t) < i for i in float_temp_group1) and all((set_t) > i for i in float_temp_group2):
-                valve_sig = '1'
-                valve_signal = valve_sig.encode('utf-8')
+            elif all((set_t) < float(i) for i in float_temp_group1) and all((set_t) > float(i) for i in float_temp_group2):
                 rc.on_relay(1)
                 label8.config(text='Open')
-            elif all((set_t) > i for i in float_temp_group1) and all((set_t) > i for i in float_temp_group2):
-                valve_sig = '1'
-                valve_signal = valve_sig.encode('utf-8')
+            elif all((set_t) > float(i) for i in float_temp_group1) and all((set_t) > float(i) for i in float_temp_group2):
                 rc.off_relay(1)
                 label8.config(text='Close')
-        else:
-            valve_sig = '1'
-            valve_signal = valve_sig.encode('utf-8')
+        elif valve_value == 0:
             rc.off_relay(1)
             label8.config(text='Close')
+        elif valve_value == 2:
+            rc.on_relay(1)
+            label8.config(text='Open')
     except:
         label8.config(text='None')
 
     monitor.after(1000, valve_button)
 
+system_on = Button(monitor, text='ON', command= sys_on)
+system_on.place(x=630, y=205)
 
 valve_on = Button(monitor, text='Valve OPEN', command= on)
-valve_on.place(x=570, y=226)
+valve_on.place(x=525, y=245)
 
 valve_off = Button(monitor, text='Valve CLOSE', command= off)
-valve_off.place(x=647, y=226)
+valve_off.place(x=602, y=245)
 
 def record_start():
     global record_value
@@ -189,10 +189,10 @@ def record_end():
     return record_value
 
 record_on = Button(monitor, text='Recording START', command= record_start)
-record_on.place(x=530, y=285)
+record_on.place(x=505, y=285)
 
 record_off = Button(monitor, text='Recording STOP', command= record_end)
-record_off.place(x=635, y=285)
+record_off.place(x=610, y=285)
 
 def record_dir():
     monitor.dirName=filedialog.askdirectory(initialdir="./", title="Save Record file")
@@ -200,10 +200,10 @@ def record_dir():
     txt.insert(0, monitor.dirName)
 
 txt = Entry(monitor, width=50)
-txt.place(x=70, y=288)
+txt.place(x=45, y=288)
 
 btn = Button(monitor, text="save_directory",command=record_dir)
-btn.place(x=430, y=285)
+btn.place(x=405, y=285)
 
 wb = openpyxl.Workbook()
 sheet1 = wb['Sheet']
